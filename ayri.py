@@ -9,7 +9,10 @@ first_player=input('1. oyuncu tas secin: ')
 stone_type(first_player)
 second_player= input('2. oyuncu tas secin: ')
 stone_type(second_player)
-
+while first_player==second_player:
+    print('ayni taslari secemezsiniz')
+    second_player= input('2. oyuncu tas secin: ')
+    stone_type(second_player)
 small_stone='O'
 
 
