@@ -1,5 +1,26 @@
 import string 
-game_board = [' ' for x in range(50)]
+player1 = input('Please enter a letter to represent player 1 (except O): ')
+while player1=='O' or not (player1 in string.ascii_letters):
+    print('invalid data try again')
+    player1=input('Please enter a letter to represent player 1:')
+
+player2 = input('Please enter a letter to represent player 2 (except O): ')
+while player2=='O' or not (player2 in string.ascii_letters) or player1==player2:
+    print('invalid data try again')
+    player2=input('Please enter a letter again to represent player 2: ')
+player2=player2.upper()
+player1=player1.upper()
+
+boardsize =int(input('Enter the row/column number of the playing field (3, 5, 7): '))
+while not boardsize in (3,5,7):
+    boardsize =int(input('Please enter 3, 5 or 7 for the row/column number of the playing field: '))
+
+if boardsize==3:
+    game_board = [' ' for x in range(10)]
+elif boardsize==5:
+    game_board = [' ' for x in range(26)]
+else:
+    game_board = [' ' for x in range(50)]
 
 def board(game_board,boardsize):
     if boardsize==3:
@@ -48,22 +69,6 @@ def konum(user_input,board_size):
     column =user_input[0].upper()
     return row_num[row]*board_size-(board_size-column_letter[column])
 
-player1 = input('Please enter a letter to represent player 1 (except O): ')
-while player1=='O' or not (player1 in string.ascii_letters):
-    print('invalid data try again')
-    player1=input('Please enter a letter to represent player 1:')
-
-player2 = input('Please enter a letter to represent player 2 (except O): ')
-while player2=='O' or not (player2 in string.ascii_letters) or player1==player2:
-    print('invalid data try again')
-    player2=input('Please enter a letter again to represent player 2: ')
-player2=player2.upper()
-player1=player1.upper()
-
-boardsize =int(input('Enter the row/column number of the playing field (3, 5, 7): '))
-while not boardsize in (3,5,7):
-    boardsize =int(input('Please enter 3, 5 or 7 for the row/column number of the playing field: '))
-
 start_point_1 = boardsize**2 -(boardsize//2)
 start_point_2 = (boardsize//2)+1
 
@@ -73,7 +78,7 @@ def move_small(boardsize):
     game_board[hareket] = 'O'
     return board(game_board,boardsize)
 
-def yönler(start,user_input,board_size):
+def yonler(start,user_input,board_size):
     start_position = start
     if user_input =='N':
         end_position = start_position-board_size
@@ -84,13 +89,19 @@ def yönler(start,user_input,board_size):
     elif user_input=='W':
         end_position = start_position-1
     count_doluluk=1
-    while game_board[end_position] != ' ':
-        again=input('dolu:')
-        count_doluluk+=1
-        yönler(start_position,again,board_size)
-        if count_doluluk==8:
-            print('kaybettiniz :(')
-            break
+    try:
+        while game_board[end_position] != ' ':
+            again=input('dolu:')
+            count_doluluk+=1
+            yonler(start_position,again,board_size)
+            if count_doluluk==8:
+                print('kaybettiniz :(')
+                break
+
+    except IndexError:
+        print('taşı oraya götüremezsiniz ')
+        again=input('TEKRAR:')
+        yonler(start_position,again,board_size)
     return end_position
 
 count=0
@@ -103,13 +114,13 @@ game_board[start_point_2]=' '
 while True:
     if count % 2==0:
         user_input =input(f'Player {player1}, please enter the direction you want to move your own big stone (N, S, E, W, NE, NW, SE, SW): ')
-        hareket1=int(yönler(start_point_1,user_input,boardsize))
+        hareket1=int(yonler(start_point_1,user_input,boardsize))
         game_board[hareket1] = player1
         board(game_board,boardsize)
         move_small(boardsize)
     else:
        user_input =input(f'Player {player2}, please enter the direction you want to move your own big stone (N, S, E, W, NE, NW, SE, SW): ')
-       hareket2=int(yönler(start_point_2,user_input,boardsize))
+       hareket2=int(yonler(start_point_2,user_input,boardsize))
        game_board[hareket2] = player2
        board(game_board,boardsize)
        move_small(boardsize)
